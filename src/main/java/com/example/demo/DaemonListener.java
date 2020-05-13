@@ -7,11 +7,14 @@ import javax.servlet.annotation.WebListener;
 
 @WebListener
 public class DaemonListener implements ServletContextListener, Runnable {
+    /* 작업을 수행할 thread */
     private Thread thread;
     private boolean isShutdown = false;
 
+    /* context */
     private ServletContext sc;
 
+    /* 작업을 수행한다. */
     public void startDaemon() {
         if (thread == null) {
             thread = new Thread(this, "Daemon thread for background task");
@@ -22,6 +25,7 @@ public class DaemonListener implements ServletContextListener, Runnable {
         }
     }
 
+    /* 스레드가 실제로 작업하는 부분 */
     @Override
     public void run() {
         Thread currentThread = Thread.currentThread();
@@ -37,6 +41,7 @@ public class DaemonListener implements ServletContextListener, Runnable {
         System.out.println("== DaemonListener end. ==");
     }
 
+    /* 컨텍스트 초기화 시 데몬 스레드를 작동한다. */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("== DaemonListener.contextInitialized has been called. ==");
@@ -44,6 +49,7 @@ public class DaemonListener implements ServletContextListener, Runnable {
         startDaemon();
     }
 
+    /* 컨텍스트 종료 시 thread를 종료시킨다. */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         System.out.println("== DaemonListener.contextDestroyed has been called. ==");
